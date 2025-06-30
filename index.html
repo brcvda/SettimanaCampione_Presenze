@@ -39,7 +39,6 @@
         }
         input[type="text"],
         input[type="date"],
-        input[type="time"],
         input[type="number"],
         select {
             width: 100%;
@@ -97,23 +96,40 @@
                 <label for="data">Data</label>
                 <input type="date" id="data" name="Data" required>
             </div>
+            
+            <!-- MODIFICA 1: Il campo "Ora" è ora un menu a tendina -->
             <div class="form-group">
                 <label for="ora">Ora</label>
-                <input type="time" id="ora" name="Ora" required>
+                <select id="ora" name="Ora" required>
+                    <option value="">Seleziona l'orario...</option>
+                    <option value="09:30">09:30</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:30">18:30</option>
+                </select>
             </div>
+            
             <div class="form-group">
                 <label for="sezione">Sezione</label>
                 <input type="text" id="sezione" name="Sezione" placeholder="Es. Ingresso, Palco, Bar..." required>
             </div>
+
+            <!-- MODIFICA 2: La voce "Misto" è stata rimossa dal campo "Sesso" -->
              <div class="form-group">
                 <label for="sesso">Sesso (gruppo prevalente)</label>
                 <select id="sesso" name="Sesso" required>
                     <option value="">Seleziona...</option>
                     <option value="M">Maschile</option>
                     <option value="F">Femminile</option>
-                    <option value="Misto">Misto</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label for="bambini">N. Bambini (0-13 anni)</label>
                 <input type="number" id="bambini" name="Bambini" value="0" min="0" required>
@@ -132,34 +148,30 @@
     </div>
 
     <script>
-        // !! IMPORTANTE: INCOLLA QUI L'URL DELLA TUA WEB APP !!
+        // !! RICORDA: Incolla qui l'URL della tua web app se non l'hai già fatto !!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3sRi56qCaBQRHVGn-YIbpnQGhQ3L9Q9sE5fUe5oL9D8RJN4N7dLcS_94VhrvjJD_bA/exec';
 
         const form = document.getElementById('presenzeForm');
         const submitButton = document.getElementById('submitButton');
         const statusMessage = document.getElementById('statusMessage');
 
-        // Imposta la data e l'ora correnti come default
+        // Imposta la data corrente come default. La pre-compilazione dell'ora è stata rimossa.
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             const year = now.getFullYear();
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
             const day = now.getDate().toString().padStart(2, '0');
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
 
             document.getElementById('data').value = `${year}-${month}-${day}`;
-            document.getElementById('ora').value = `${hours}:${minutes}`;
         });
 
         form.addEventListener('submit', (e) => {
-            e.preventDefault(); // Impedisce il ricaricamento della pagina
+            e.preventDefault(); 
             
             submitButton.disabled = true;
             submitButton.textContent = 'Salvataggio in corso...';
             statusMessage.style.display = 'none';
 
-            // Usiamo FormData per raccogliere facilmente i dati dal form
             const formData = new FormData(form);
 
             fetch(SCRIPT_URL, {
@@ -170,8 +182,8 @@
             .then(data => {
                 if (data.result === 'success') {
                     showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
-                    form.reset(); // Resetta il form
-                    // Reimposta data e ora correnti dopo il reset
+                    form.reset(); 
+                    // Reimposta solo la data corrente dopo il reset
                     document.dispatchEvent(new Event('DOMContentLoaded'));
                 } else {
                     throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
@@ -182,7 +194,6 @@
                 console.error('Errore:', error);
             })
             .finally(() => {
-                // Riabilita il pulsante alla fine
                 submitButton.disabled = false;
                 submitButton.textContent = 'Salva Dati';
             });
@@ -193,7 +204,6 @@
             statusMessage.textContent = text;
             statusMessage.style.display = 'block';
             
-            // Nasconde il messaggio dopo 5 secondi
             setTimeout(() => {
                 statusMessage.style.display = 'none';
             }, 5000);
