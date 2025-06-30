@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 1rem 0; /* Aggiunto margine per evitare che il form tocchi i bordi su schermi piccoli */
+            margin: 1rem 0;
         }
         .container {
             background-color: white;
@@ -26,14 +26,13 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 0.5rem; /* Ridotto margine inferiore per avvicinare le istruzioni */
+            margin-bottom: 0.5rem;
         }
-        /* MODIFICA CSS: Stile per le istruzioni */
         .instructions {
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
-            color: #d9534f; /* Colore rosso */
+            color: #d9534f;
             font-weight: bold;
         }
         .form-group {
@@ -97,10 +96,8 @@
 <body>
 
     <div class="container">
-        <!-- MODIFICA ETICHETTA: Titolo principale -->
         <h1>Settimana campione - registrazione presenze</h1>
         
-        <!-- MODIFICA HTML: Aggiunta sezione istruzioni -->
         <p class="instructions">
             Scheda di registrazione da compilare ogni ora 2 volte, una volta per la rilevazione delle femmine e una volta per la rilevazione dei maschi.
         </p>
@@ -146,7 +143,6 @@
                 </select>
             </div>
 
-            <!-- MODIFICA ETICHETTA: "Sesso" in "Genere" -->
              <div class="form-group">
                 <label for="sesso">Genere</label>
                 <select id="sesso" name="Sesso" required>
@@ -166,7 +162,6 @@
                 <input type="number" id="giovani" name="Giovani" value="0" min="0" required>
             </div>
 
-            <!-- MODIFICA ETICHETTA: "N. Adulti (>20 anni)" in "N. Adulti" -->
             <div class="form-group">
                 <label for="adulti">N. Adulti</label>
                 <input type="number" id="adulti" name="Adulti" value="0" min="0" required>
@@ -211,35 +206,40 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault(); 
             
-            submitButton.disabled = true;
-            submitButton.textContent = 'Salvataggio in corso...';
-            statusMessage.style.display = 'none';
+            // MODIFICA: Aggiunta richiesta di conferma
+            // L'invio procederà solo se l'utente clicca "OK".
+            if (confirm("Sei sicuro di voler salvare questi dati?")) {
+            
+                submitButton.disabled = true;
+                submitButton.textContent = 'Salvataggio in corso...';
+                statusMessage.style.display = 'none';
 
-            const formData = new FormData(form);
+                const formData = new FormData(form);
 
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
-                    form.reset(); 
-                    document.dispatchEvent(new Event('DOMContentLoaded'));
-                    toggleGiovaniField();
-                } else {
-                    throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
-                }
-            })
-            .catch(error => {
-                showMessage('error', `Errore: ${error.message}`);
-                console.error('Errore:', error);
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Salva Dati';
-            });
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
+                        form.reset(); 
+                        document.dispatchEvent(new Event('DOMContentLoaded'));
+                        toggleGiovaniField();
+                    } else {
+                        throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
+                    }
+                })
+                .catch(error => {
+                    showMessage('error', `Errore: ${error.message}`);
+                    console.error('Errore:', error);
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Salva Dati';
+                });
+            }
         });
         
         function showMessage(type, text) {
