@@ -103,7 +103,6 @@
         </p>
 
         <form id="presenzeForm">
-            <!-- MODIFICA: Il campo "Sezione" è stato spostato qui come primo elemento -->
             <div class="form-group">
                 <label for="sezione">Sezione</label>
                 <select id="sezione" name="Sezione" required>
@@ -145,12 +144,13 @@
                 </select>
             </div>
             
+             <!-- MODIFICA: Invertito l'ordine delle opzioni "Femminile" e "Maschile" -->
              <div class="form-group">
                 <label for="sesso">Genere</label>
                 <select id="sesso" name="Sesso" required>
                     <option value="">Seleziona...</option>
-                    <option value="M">Maschile</option>
                     <option value="F">Femminile</option>
+                    <option value="M">Maschile</option>
                 </select>
             </div>
 
