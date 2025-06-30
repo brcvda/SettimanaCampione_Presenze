@@ -97,7 +97,6 @@
                 <input type="date" id="data" name="Data" required>
             </div>
             
-            <!-- MODIFICA 1: Il campo "Ora" è ora un menu a tendina -->
             <div class="form-group">
                 <label for="ora">Ora</label>
                 <select id="ora" name="Ora" required>
@@ -115,12 +114,21 @@
                 </select>
             </div>
             
+            <!-- MODIFICA: Il campo "Sezione" è ora un menu a tendina ordinato -->
             <div class="form-group">
                 <label for="sezione">Sezione</label>
-                <input type="text" id="sezione" name="Sezione" placeholder="Es. Ingresso, Palco, Bar..." required>
+                <select id="sezione" name="Sezione" required>
+                    <option value="">Seleziona la sezione...</option>
+                    <option value="Adulti 1° piano">Adulti 1° piano</option>
+                    <option value="Adulti 2° piano">Adulti 2° piano</option>
+                    <option value="Emeroteca">Emeroteca</option>
+                    <option value="Fondo valdostano">Fondo valdostano</option>
+                    <option value="Fonovideoteca">Fonovideoteca</option>
+                    <option value="Ragazzi">Ragazzi</option>
+                    <option value="Sala studio">Sala studio</option>
+                </select>
             </div>
 
-            <!-- MODIFICA 2: La voce "Misto" è stata rimossa dal campo "Sesso" -->
              <div class="form-group">
                 <label for="sesso">Sesso (gruppo prevalente)</label>
                 <select id="sesso" name="Sesso" required>
@@ -148,20 +156,18 @@
     </div>
 
     <script>
-        // !! RICORDA: Incolla qui l'URL della tua web app se non l'hai già fatto !!
+        // L'URL della tua Web App è già inserito!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3sRi56qCaBQRHVGn-YIbpnQGhQ3L9Q9sE5fUe5oL9D8RJN4N7dLcS_94VhrvjJD_bA/exec';
 
         const form = document.getElementById('presenzeForm');
         const submitButton = document.getElementById('submitButton');
         const statusMessage = document.getElementById('statusMessage');
 
-        // Imposta la data corrente come default. La pre-compilazione dell'ora è stata rimossa.
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             const year = now.getFullYear();
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
             const day = now.getDate().toString().padStart(2, '0');
-
             document.getElementById('data').value = `${year}-${month}-${day}`;
         });
 
@@ -183,7 +189,6 @@
                 if (data.result === 'success') {
                     showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
                     form.reset(); 
-                    // Reimposta solo la data corrente dopo il reset
                     document.dispatchEvent(new Event('DOMContentLoaded'));
                 } else {
                     throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
