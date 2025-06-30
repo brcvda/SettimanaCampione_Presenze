@@ -81,6 +81,11 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        /* MODIFICA CSS: Nasconde il campo "Giovani" di default */
+        #giovani-form-group {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -114,7 +119,6 @@
                 </select>
             </div>
             
-            <!-- MODIFICA: Il campo "Sezione" è ora un menu a tendina ordinato -->
             <div class="form-group">
                 <label for="sezione">Sezione</label>
                 <select id="sezione" name="Sezione" required>
@@ -142,10 +146,13 @@
                 <label for="bambini">N. Bambini (0-13 anni)</label>
                 <input type="number" id="bambini" name="Bambini" value="0" min="0" required>
             </div>
-            <div class="form-group">
+            
+            <!-- MODIFICA HTML: Aggiunto un ID al contenitore del campo "Giovani" -->
+            <div class="form-group" id="giovani-form-group">
                 <label for="giovani">N. Giovani (14-20 anni)</label>
                 <input type="number" id="giovani" name="Giovani" value="0" min="0" required>
             </div>
+
             <div class="form-group">
                 <label for="adulti">N. Adulti (>20 anni)</label>
                 <input type="number" id="adulti" name="Adulti" value="0" min="0" required>
@@ -156,12 +163,29 @@
     </div>
 
     <script>
-        // L'URL della tua Web App è già inserito!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3sRi56qCaBQRHVGn-YIbpnQGhQ3L9Q9sE5fUe5oL9D8RJN4N7dLcS_94VhrvjJD_bA/exec';
 
         const form = document.getElementById('presenzeForm');
         const submitButton = document.getElementById('submitButton');
         const statusMessage = document.getElementById('statusMessage');
+
+        // MODIFICA JAVASCRIPT: Selezioniamo i campi per la logica condizionale
+        const sezioneSelect = document.getElementById('sezione');
+        const giovaniGroup = document.getElementById('giovani-form-group');
+        const giovaniInput = document.getElementById('giovani');
+
+        // Funzione per mostrare/nascondere il campo "Giovani"
+        function toggleGiovaniField() {
+            if (sezioneSelect.value === 'Ragazzi') {
+                giovaniGroup.style.display = 'block'; // Mostra il campo
+            } else {
+                giovaniGroup.style.display = 'none'; // Nascondi il campo
+                giovaniInput.value = 0; // Azzera il valore per sicurezza
+            }
+        }
+
+        // Aggiungiamo un listener che attiva la funzione ogni volta che si cambia sezione
+        sezioneSelect.addEventListener('change', toggleGiovaniField);
 
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
@@ -169,6 +193,9 @@
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
             const day = now.getDate().toString().padStart(2, '0');
             document.getElementById('data').value = `${year}-${month}-${day}`;
+            
+            // Assicuriamoci che il campo sia nascosto al caricamento della pagina
+            toggleGiovaniField();
         });
 
         form.addEventListener('submit', (e) => {
@@ -190,6 +217,8 @@
                     showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
                     form.reset(); 
                     document.dispatchEvent(new Event('DOMContentLoaded'));
+                    // Nascondiamo di nuovo il campo Giovani dopo il reset del form
+                    toggleGiovaniField();
                 } else {
                     throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
                 }
