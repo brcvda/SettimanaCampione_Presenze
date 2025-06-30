@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione Presenze</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #a0c3e6;
+            cursor: not-allowed;
+        }
+        .message {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            display: none; /* Nascosto di default */
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Registrazione Presenze</h1>
+        <form id="presenzeForm">
+            <div class="form-group">
+                <label for="rilevatore">Il tuo nome (Rilevatore)</label>
+                <input type="text" id="rilevatore" name="Rilevatore" required>
+            </div>
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="date" id="data" name="Data" required>
+            </div>
+            <div class="form-group">
+                <label for="ora">Ora</label>
+                <input type="time" id="ora" name="Ora" required>
+            </div>
+            <div class="form-group">
+                <label for="sezione">Sezione</label>
+                <input type="text" id="sezione" name="Sezione" placeholder="Es. Ingresso, Palco, Bar..." required>
+            </div>
+             <div class="form-group">
+                <label for="sesso">Sesso (gruppo prevalente)</label>
+                <select id="sesso" name="Sesso" required>
+                    <option value="">Seleziona...</option>
+                    <option value="M">Maschile</option>
+                    <option value="F">Femminile</option>
+                    <option value="Misto">Misto</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bambini">N. Bambini (0-13 anni)</label>
+                <input type="number" id="bambini" name="Bambini" value="0" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="giovani">N. Giovani (14-20 anni)</label>
+                <input type="number" id="giovani" name="Giovani" value="0" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="adulti">N. Adulti (>20 anni)</label>
+                <input type="number" id="adulti" name="Adulti" value="0" min="0" required>
+            </div>
+            <button type="submit" id="submitButton">Salva Dati</button>
+        </form>
+        <div id="statusMessage" class="message"></div>
+    </div>
+
+    <script>
+        // !! IMPORTANTE: INCOLLA QUI L'URL DELLA TUA WEB APP !!
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxm3sRi56qCaBQRHVGn-YIbpnQGhQ3L9Q9sE5fUe5oL9D8RJN4N7dLcS_94VhrvjJD_bA/exec';
+
+        const form = document.getElementById('presenzeForm');
+        const submitButton = document.getElementById('submitButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Imposta la data e l'ora correnti come default
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+
+            document.getElementById('data').value = `${year}-${month}-${day}`;
+            document.getElementById('ora').value = `${hours}:${minutes}`;
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Impedisce il ricaricamento della pagina
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Salvataggio in corso...';
+            statusMessage.style.display = 'none';
+
+            // Usiamo FormData per raccogliere facilmente i dati dal form
+            const formData = new FormData(form);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
+                    form.reset(); // Resetta il form
+                    // Reimposta data e ora correnti dopo il reset
+                    document.dispatchEvent(new Event('DOMContentLoaded'));
+                } else {
+                    throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
+                }
+            })
+            .catch(error => {
+                showMessage('error', `Errore: ${error.message}`);
+                console.error('Errore:', error);
+            })
+            .finally(() => {
+                // Riabilita il pulsante alla fine
+                submitButton.disabled = false;
+                submitButton.textContent = 'Salva Dati';
+            });
+        });
+        
+        function showMessage(type, text) {
+            statusMessage.className = `message ${type}`;
+            statusMessage.textContent = text;
+            statusMessage.style.display = 'block';
+            
+            // Nasconde il messaggio dopo 5 secondi
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
