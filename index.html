@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            margin: 1rem 0; /* Aggiunto margine per evitare che il form tocchi i bordi su schermi piccoli */
         }
         .container {
             background-color: white;
@@ -26,7 +26,15 @@
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 0.5rem; /* Ridotto margine inferiore per avvicinare le istruzioni */
+        }
+        /* MODIFICA CSS: Stile per le istruzioni */
+        .instructions {
+            text-align: center;
             margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #d9534f; /* Colore rosso */
+            font-weight: bold;
         }
         .form-group {
             margin-bottom: 1rem;
@@ -71,7 +79,7 @@
             padding: 1rem;
             margin-top: 1rem;
             border-radius: 4px;
-            display: none; /* Nascosto di default */
+            display: none;
         }
         .message.success {
             background-color: #d4edda;
@@ -81,8 +89,6 @@
             background-color: #f8d7da;
             color: #721c24;
         }
-
-        /* MODIFICA CSS: Nasconde il campo "Giovani" di default */
         #giovani-form-group {
             display: none;
         }
@@ -91,7 +97,14 @@
 <body>
 
     <div class="container">
-        <h1>Registrazione Presenze</h1>
+        <!-- MODIFICA ETICHETTA: Titolo principale -->
+        <h1>Settimana campione - registrazione presenze</h1>
+        
+        <!-- MODIFICA HTML: Aggiunta sezione istruzioni -->
+        <p class="instructions">
+            Scheda di registrazione da compilare ogni ora 2 volte, una volta per la rilevazione delle femmine e una volta per la rilevazione dei maschi.
+        </p>
+
         <form id="presenzeForm">
             <div class="form-group">
                 <label for="rilevatore">Il tuo nome (Rilevatore)</label>
@@ -133,8 +146,9 @@
                 </select>
             </div>
 
+            <!-- MODIFICA ETICHETTA: "Sesso" in "Genere" -->
              <div class="form-group">
-                <label for="sesso">Sesso (gruppo prevalente)</label>
+                <label for="sesso">Genere</label>
                 <select id="sesso" name="Sesso" required>
                     <option value="">Seleziona...</option>
                     <option value="M">Maschile</option>
@@ -147,14 +161,14 @@
                 <input type="number" id="bambini" name="Bambini" value="0" min="0" required>
             </div>
             
-            <!-- MODIFICA HTML: Aggiunto un ID al contenitore del campo "Giovani" -->
             <div class="form-group" id="giovani-form-group">
                 <label for="giovani">N. Giovani (14-20 anni)</label>
                 <input type="number" id="giovani" name="Giovani" value="0" min="0" required>
             </div>
 
+            <!-- MODIFICA ETICHETTA: "N. Adulti (>20 anni)" in "N. Adulti" -->
             <div class="form-group">
-                <label for="adulti">N. Adulti (>20 anni)</label>
+                <label for="adulti">N. Adulti</label>
                 <input type="number" id="adulti" name="Adulti" value="0" min="0" required>
             </div>
             <button type="submit" id="submitButton">Salva Dati</button>
@@ -169,22 +183,19 @@
         const submitButton = document.getElementById('submitButton');
         const statusMessage = document.getElementById('statusMessage');
 
-        // MODIFICA JAVASCRIPT: Selezioniamo i campi per la logica condizionale
         const sezioneSelect = document.getElementById('sezione');
         const giovaniGroup = document.getElementById('giovani-form-group');
         const giovaniInput = document.getElementById('giovani');
 
-        // Funzione per mostrare/nascondere il campo "Giovani"
         function toggleGiovaniField() {
             if (sezioneSelect.value === 'Ragazzi') {
-                giovaniGroup.style.display = 'block'; // Mostra il campo
+                giovaniGroup.style.display = 'block';
             } else {
-                giovaniGroup.style.display = 'none'; // Nascondi il campo
-                giovaniInput.value = 0; // Azzera il valore per sicurezza
+                giovaniGroup.style.display = 'none';
+                giovaniInput.value = 0;
             }
         }
 
-        // Aggiungiamo un listener che attiva la funzione ogni volta che si cambia sezione
         sezioneSelect.addEventListener('change', toggleGiovaniField);
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -194,7 +205,6 @@
             const day = now.getDate().toString().padStart(2, '0');
             document.getElementById('data').value = `${year}-${month}-${day}`;
             
-            // Assicuriamoci che il campo sia nascosto al caricamento della pagina
             toggleGiovaniField();
         });
 
@@ -217,7 +227,6 @@
                     showMessage('success', 'Dati salvati con successo! Il modulo è stato resettato.');
                     form.reset(); 
                     document.dispatchEvent(new Event('DOMContentLoaded'));
-                    // Nascondiamo di nuovo il campo Giovani dopo il reset del form
                     toggleGiovaniField();
                 } else {
                     throw new Error(data.message || 'Si è verificato un errore sconosciuto.');
