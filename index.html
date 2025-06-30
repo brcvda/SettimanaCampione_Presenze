@@ -103,10 +103,26 @@
         </p>
 
         <form id="presenzeForm">
+            <!-- MODIFICA: Il campo "Sezione" è stato spostato qui come primo elemento -->
+            <div class="form-group">
+                <label for="sezione">Sezione</label>
+                <select id="sezione" name="Sezione" required>
+                    <option value="">Seleziona la sezione...</option>
+                    <option value="Adulti 1° piano">Adulti 1° piano</option>
+                    <option value="Adulti 2° piano">Adulti 2° piano</option>
+                    <option value="Emeroteca">Emeroteca</option>
+                    <option value="Fondo valdostano">Fondo valdostano</option>
+                    <option value="Fonovideoteca">Fonovideoteca</option>
+                    <option value="Ragazzi">Ragazzi</option>
+                    <option value="Sala studio">Sala studio</option>
+                </select>
+            </div>
+            
             <div class="form-group">
                 <label for="rilevatore">Il tuo nome (Rilevatore)</label>
                 <input type="text" id="rilevatore" name="Rilevatore" required>
             </div>
+
             <div class="form-group">
                 <label for="data">Data</label>
                 <input type="date" id="data" name="Data" required>
@@ -129,20 +145,6 @@
                 </select>
             </div>
             
-            <div class="form-group">
-                <label for="sezione">Sezione</label>
-                <select id="sezione" name="Sezione" required>
-                    <option value="">Seleziona la sezione...</option>
-                    <option value="Adulti 1° piano">Adulti 1° piano</option>
-                    <option value="Adulti 2° piano">Adulti 2° piano</option>
-                    <option value="Emeroteca">Emeroteca</option>
-                    <option value="Fondo valdostano">Fondo valdostano</option>
-                    <option value="Fonovideoteca">Fonovideoteca</option>
-                    <option value="Ragazzi">Ragazzi</option>
-                    <option value="Sala studio">Sala studio</option>
-                </select>
-            </div>
-
              <div class="form-group">
                 <label for="sesso">Genere</label>
                 <select id="sesso" name="Sesso" required>
@@ -206,8 +208,6 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault(); 
             
-            // MODIFICA: Aggiunta richiesta di conferma
-            // L'invio procederà solo se l'utente clicca "OK".
             if (confirm("Sei sicuro di voler salvare questi dati?")) {
             
                 submitButton.disabled = true;
